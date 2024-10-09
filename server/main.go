@@ -1,24 +1,15 @@
 package main
 
 import (
-    "net/http"
-    "time"
-    "github.com/gin-gonic/gin"
+    "flag"
+    "github.com/kmiit/vivi/utils"
 )
 
 func main () {
-	router := gin.Default()
-	router.GET("/ping", func(c *gin.Context) {
-	    c.JSON(200, gin.H{
-	        "message": "pong",
-	    })
-	})
-	s := &http.Server{
-		Addr:           ":8080",
-		Handler:        router,
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
-		MaxHeaderBytes: 1 << 20,
-	}
-	s.ListenAndServe()
+    var port string
+    
+    flag.StringVar(&port, "p", "8080", "端口，默认8080")
+    flag.Parse()
+    
+    utils.RunServer(port)
 }
