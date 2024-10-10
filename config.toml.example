@@ -1,0 +1,5 @@
+# Example config file for vivi.
+
+# Server listen port
+port = 8080
+

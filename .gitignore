@@ -1,2 +1,3 @@
 server/vivi
 *.bak
+*.rdb
