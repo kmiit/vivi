@@ -3,11 +3,15 @@ package utils
 import (
     "fmt"
     "net/http"
+    "strconv"
     "time"
+
+    . "github.com/kmiit/vivi/types"
+
     "github.com/gin-gonic/gin"
 )
 
-func RunServer (p string) {
+func RunServer (config ServerConfig) {
     gin.SetMode(gin.ReleaseMode)
     router := gin.Default()
     router.GET("/ping", func(c *gin.Context) {
@@ -15,10 +19,9 @@ func RunServer (p string) {
             "message": "pong",
         })
     })
-    port := ":" + p
-    fmt.Println("Vivi is listening on: ", p)
+    fmt.Println("Vivi is listening on: ", config.Port)
     s := &http.Server{
-    	Addr:           port,
+    	Addr:           ":" + strconv.FormatInt(int64(config.Port), 10),
     	Handler:        router,
     	ReadTimeout:    10 * time.Second,
         WriteTimeout:   10 * time.Second,
