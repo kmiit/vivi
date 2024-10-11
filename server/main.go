@@ -17,7 +17,7 @@ func main() {
 	flag.Parse()
 
 	if configPath == "" {
-		log.Fatalln(0, "No config file specified!")
+		log.Fatalln(-1, "No config file specified!")
 	}
 
 	configFile, err := os.ReadFile(configPath)

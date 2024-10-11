@@ -1,17 +1,18 @@
 package utils
 
 import (
+    "context"
 	"fmt"
 	"net/http"
 	"strconv"
 	"time"
 
-	. "github.com/kmiit/vivi/types"
+	"github.com/kmiit/vivi/types"
 
 	"github.com/gin-gonic/gin"
 )
 
-func RunServer(config ServerConfig) {
+func RunServer(config types.ServerConfig, ctx context.Context) {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 	router.GET("/ping", func(c *gin.Context) {
