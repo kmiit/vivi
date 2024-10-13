@@ -9,7 +9,7 @@ import (
 	"github.com/pelletier/go-toml/v2"
 )
 
-func Parse(c string) (types.ServerConfig) {
+func Parse(c string) (types.Config) {
 	if c == "" {
 		log.Fatalln(-1, "Config file not specified")
 	}
@@ -19,7 +19,7 @@ func Parse(c string) (types.ServerConfig) {
 		log.Fatalln(1, err)
 	}
 
-	var config types.ServerConfig
+	var config types.Config
 	err = toml.Unmarshal(cByte, &config)
 	if err != nil {
 		log.Fatalln(2, err)

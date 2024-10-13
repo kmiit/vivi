@@ -13,13 +13,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RunServer(config types.ServerConfig) {
+func RunServer(config types.Config) {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	initRouter(r)
-	fmt.Println("Vivi is listening on: ", config.Port)
+	address := config.Server.Address + ":" + strconv.FormatInt(int64(config.Server.Port), 10)
+	fmt.Println("Vivi is listening on: ", address)
 	s := &http.Server{
-		Addr:           ":" + strconv.FormatInt(int64(config.Port), 10),
+		Addr:           address,
 		Handler:        r,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,

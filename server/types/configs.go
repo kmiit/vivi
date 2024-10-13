@@ -1,5 +1,10 @@
 package types
 
 type ServerConfig struct {
-	Port int
+	Address	string
+	Port 	int
+}
+
+type Config struct {
+	Server ServerConfig
 }
