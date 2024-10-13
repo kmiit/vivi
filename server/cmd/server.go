@@ -6,6 +6,8 @@ import (
     "sync"
 
 	//"github.com/kmiit/vivi/types"
+	"github.com/kmiit/vivi/cmd/flags"
+	"github.com/kmiit/vivi/utils/config"
 	"github.com/kmiit/vivi/utils/server"
 
 	"github.com/spf13/cobra"
@@ -32,7 +34,7 @@ func run() {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		server.RunServer()
+		server.RunServer(config.Parse(flags.ConfigFile))
 	}()
 	
 	wg.Wait()
