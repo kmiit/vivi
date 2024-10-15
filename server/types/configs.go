@@ -1,15 +1,15 @@
 package types
 
 type ServerConfig struct {
-	Address	string
-	Port		int
+	Address string
+	Port    int
 }
 
 type StorageConfig struct {
-	Monitpath	[]string
+	WatchPath []string
 }
 
 type Config struct {
-	Server		ServerConfig
-	Storage	StorageConfig
+	Server  ServerConfig
+	Storage StorageConfig
 }

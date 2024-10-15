@@ -9,12 +9,14 @@ import (
 const TAG = "Config"
 
 var (
-	Config       types.Config
-	ServerConfig types.ServerConfig
+	Config        types.Config
+	ServerConfig  types.ServerConfig
+	StorageConfig types.StorageConfig
 )
 
 func InitConfig() {
 	log.I(TAG, "Initializing config")
 	Config = parse(flags.ConfigFile)
 	ServerConfig = Config.Server
+	StorageConfig = Config.Storage
 }
