@@ -5,10 +5,17 @@
 # Server listening address, 
 # Set it to "0.0.0.0" to export server to public network
 address = "127.0.0.1" 
-port    = 8080
+port    = "8080"
 
 # Storage config
 [storage]
 
 # A string list of local directory to watch, such as: "./storage"
 watchPath = []
+
+# Database config 
+[database]
+dbAddress = "127.0.0.1"
+dbPort = "6379"
+password = ""
+db = 0

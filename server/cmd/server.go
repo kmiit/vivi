@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/kmiit/vivi/utils/config"
+	"github.com/kmiit/vivi/utils/db"
 	"github.com/kmiit/vivi/utils/log"
 	"github.com/kmiit/vivi/utils/server"
 	"github.com/kmiit/vivi/utils/storage"
@@ -35,13 +36,19 @@ func run() {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		server.RunServer()
+		server.InitServer()
 	}()
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
 		storage.WatchStorage()
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		db.InitDatabase()
 	}()
 
 	wg.Wait()

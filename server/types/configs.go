@@ -1,8 +1,15 @@
 package types
 
+type DatabaseConfig struct {
+	DbAddress  string
+	DbPort     string
+	DbPassword string
+	DbNumber   int
+}
+
 type ServerConfig struct {
 	Address string
-	Port    int
+	Port    string
 }
 
 type StorageConfig struct {
@@ -10,6 +17,7 @@ type StorageConfig struct {
 }
 
 type Config struct {
-	Server  ServerConfig
-	Storage StorageConfig
+	Database DatabaseConfig
+	Server   ServerConfig
+	Storage  StorageConfig
 }
