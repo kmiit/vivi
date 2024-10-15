@@ -6,7 +6,6 @@ package cmd
 import (
 	"github.com/kmiit/vivi/cmd/flags"
 	"github.com/kmiit/vivi/utils/log"
-
 	"github.com/spf13/cobra"
 )
 
@@ -25,5 +24,5 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVar(&flags.ConfigFile, "config", "", "config file")
+	rootCmd.PersistentFlags().StringVarP(&flags.ConfigFile, "config", "c", "", "config file")
 }
