@@ -1,24 +1,25 @@
 package server
 
 import (
-//    "context"
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/kmiit/vivi/types"
+	"github.com/kmiit/vivi/utils/log"
 	"github.com/kmiit/vivi/utils/server/handlers"
 
 	"github.com/gin-gonic/gin"
 )
+
+const TAG = "Server"
 
 func RunServer(config types.Config) {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	initRouter(r)
 	address := config.Server.Address + ":" + strconv.FormatInt(int64(config.Server.Port), 10)
-	fmt.Println("Vivi is listening on: ", address)
+	log.I(TAG, "vivi is listening on: ", address)
 	s := &http.Server{
 		Addr:           address,
 		Handler:        r,

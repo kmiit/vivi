@@ -1,33 +1,29 @@
 /*
 Copyright © 2024 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/kmiit/vivi/cmd/flags"
-	
+	"github.com/kmiit/vivi/utils/log"
+
 	"github.com/spf13/cobra"
 )
+
+const TAG = "root"
 
 var rootCmd = &cobra.Command{
 	Use:   "vivi",
 	Short: "A small file server written in go",
-	Long: `A file server backend written in golang`,
+	Long:  `A file server backend written in golang`,
 }
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		log.F(TAG, err)
 	}
 }
 
 func init() {
 	rootCmd.PersistentFlags().StringVar(&flags.ConfigFile, "config", "", "config file")
 }
-
-

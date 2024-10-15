@@ -1,20 +1,22 @@
 package cmd
 
 import (
-  "fmt"
+	"fmt"
 
-  "github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 )
 
+const VERSION = "0.0.1"
+
 func init() {
-  rootCmd.AddCommand(versionCmd)
+	rootCmd.AddCommand(versionCmd)
 }
 
 var versionCmd = &cobra.Command{
-  Use:   "version",
-  Short: "Print the version number of vivi",
-  Long:  `Show the current version of vivi which you are executing.`,
-  Run: func(cmd *cobra.Command, args []string) {
-    fmt.Println("Vivi version: 0.0.1")
-  },
+	Use:   "version",
+	Short: "Print the version number of vivi",
+	Long:  `Show the current version of vivi which you are executing.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("vivi version:", VERSION)
+	},
 }

@@ -1,28 +1,30 @@
 package config
 
 import (
-	"log"
 	"os"
 
 	"github.com/kmiit/vivi/types"
+	"github.com/kmiit/vivi/utils/log"
 
 	"github.com/pelletier/go-toml/v2"
 )
 
-func Parse(c string) (types.Config) {
+const TAG = "Config"
+
+func Parse(c string) types.Config {
 	if c == "" {
-		log.Fatalln(-1, "Config file not specified")
+		log.F(TAG, "Config file not specified")
 	}
 
 	cByte, err := os.ReadFile(c)
 	if err != nil {
-		log.Fatalln(1, err)
+		log.F(TAG, err)
 	}
 
 	var config types.Config
 	err = toml.Unmarshal(cByte, &config)
 	if err != nil {
-		log.Fatalln(2, err)
+		log.F(TAG, err)
 	}
 
 	return config
