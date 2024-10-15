@@ -6,15 +6,15 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kmiit/vivi/types"
+	"github.com/kmiit/vivi/utils/config"
 	"github.com/kmiit/vivi/utils/log"
 )
 
-func RunServer(config types.Config) {
+func RunServer() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	initRouter(r)
-	address := config.Server.Address + ":" + strconv.FormatInt(int64(config.Server.Port), 10)
+	address := config.ServerConfig.Address + ":" + strconv.FormatInt(int64(config.ServerConfig.Port), 10)
 	log.I(TAG, "vivi is listening on: ", address)
 	s := &http.Server{
 		Addr:           address,

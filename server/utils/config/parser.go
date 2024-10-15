@@ -9,9 +9,7 @@ import (
 	"github.com/pelletier/go-toml/v2"
 )
 
-const TAG = "Config"
-
-func Parse(c string) types.Config {
+func parse(c string) types.Config {
 	if c == "" {
 		log.F(TAG, "Config file not specified")
 	}
