@@ -24,6 +24,8 @@ var serverCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		config.InitConfig()
 		storage.InitStorage()
+		db.InitDatabase()
+
 		run()
 	},
 }
@@ -43,12 +45,6 @@ func run() {
 	go func() {
 		defer wg.Done()
 		storage.WatchStorage()
-	}()
-
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		db.InitDatabase()
 	}()
 
 	wg.Wait()
