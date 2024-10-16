@@ -3,29 +3,16 @@ package types
 type Descriptor interface{}
 
 /*
- * FileDescriptor is a struct to store the file information
+ * FDescriptor is a struct to store the file information, including dir and file
 
  * Private: DescriptorP struct to store the private information
 
  * Path: the abs path of the file
  */
 
-type FileDescriptor struct {
-	Path    string      `json:"path"`
-	Private DescriptorP `json:"private"`
-}
-
-/*
- * DirDescriptor is a struct to store the directory information
-
- * Private: DescriptorP struct to store the private information
-
- * Path: the abs path of the directory
- */
-
-type DirDescriptor struct {
-	Path    string      `json:"path"`
-	Private DescriptorP `json:"private"`
+type FDescriptor struct {
+	Path  string      `json:"path"`
+	Outer DescriptorO `json:"private"`
 }
 
 /*
@@ -48,8 +35,7 @@ type DirDescriptor struct {
 
  * Name: The name of the file or directory
 
- * Parent: id of the parent folder,
-			WatchPath is 0, so the descriptor whose parent is 0 will be exported first.
+ * Parent: id chain of the parent folder,
 
  * Related: The related files of the file
 
@@ -61,14 +47,16 @@ type DirDescriptor struct {
 		  But it is advised to store the file in a separate folder and set the tags in the folder.
 */
 
-type DescriptorP struct {
+type DescriptorO struct {
 	Alias    []string `json:"alias"`
 	Details  string   `json:"details"`
 	Ext      string   `json:"ext"`
 	FullName string   `json:"fullName"`
+	Hidden   bool     `json:"hidden"`
 	ID       int64    `json:"id"`
+	IsDir    bool     `json:"isDir"`
 	Name     string   `json:"name"`
-	Parent   int      `json:"parent"`
+	Parent   string   `json:"parent"`
 	Related  []string `json:"related"`
 	SubFiles []int    `json:"subFiles"`
 	Tags     []string `json:"tags"`
