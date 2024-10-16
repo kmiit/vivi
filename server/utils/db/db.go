@@ -44,7 +44,7 @@ func GetAllFiles(ctx context.Context, namespace string) ([]types.FDescriptor, er
 			break
 		}
 	}
-	log.W(TAG, "Get all files: ", files)
+	log.V(TAG, "Get all files: ", files)
 	return files, nil
 }
 
@@ -66,11 +66,13 @@ func GetKeys(ctx context.Context, namespace string) ([]string, error) {
 		cursor  uint64
 	)
 	for {
-		keys, cursor, err := rdb.Scan(ctx, cursor, namespace+"*", 0).Result()
+		keys, nextCursor, err := rdb.Scan(ctx, cursor, namespace+"*", 0).Result()
 		if err != nil {
 			return nil, err
 		}
+		cursor = nextCursor
 		allKeys = append(allKeys, keys...)
+
 		if cursor == 0 {
 			break
 		}
