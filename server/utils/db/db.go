@@ -59,3 +59,18 @@ func GetAllOuter(ctx context.Context, namespace string) ([]types.DescriptorO, er
 	}
 	return files, nil
 }
+
+func GetKeys(ctx context.Context, namespace string) ([]string, error) {
+	var (
+		allKeys []string
+		cursor  uint64
+	)
+	for {
+		keys, cursor, _ := RDB.Scan(ctx, cursor, namespace+"*", 0).Result()
+		allKeys = append(allKeys, keys...)
+		if cursor == 0 {
+			break
+		}
+	}
+	return allKeys, nil
+}
