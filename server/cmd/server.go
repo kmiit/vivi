@@ -23,8 +23,8 @@ var serverCmd = &cobra.Command{
 	Long:  `Run the vivi server in frontend.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		config.InitConfig()
-		storage.InitStorage()
 		db.InitDatabase()
+		storage.InitStorage()
 
 		run()
 	},
