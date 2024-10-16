@@ -2,3 +2,4 @@ server/storage
 server/vivi*
 *.bak
 *.rdb
+config.toml
