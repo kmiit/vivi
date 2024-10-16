@@ -33,13 +33,14 @@ func InitIndex() {
 				id, _ = db.GetNewId(ctx, STORAGE_UNIQUE_ID)
 				pid   = "S" + strconv.FormatInt(id, 10)
 			)
-			mapAll(dir, pid)
+			MapAll(dir, pid)
 		}
 	}
 }
 
 // map all files and directories in the given directory
-func mapAll(dir string, pChain string) {
+// Usually used when a new storage or folder added.
+func MapAll(dir string, pChain string) {
 	entries, err := os.ReadDir(dir)
 	if err != nil {
 		log.E(TAG, err)
@@ -48,7 +49,7 @@ func mapAll(dir string, pChain string) {
 	for _, entry := range entries {
 		if entry.IsDir() {
 			dir := filepath.Join(dir, entry.Name())
-			mapAll(dir, NewDescriptor(dir, pChain, true))
+			MapAll(dir, NewDescriptor(dir, pChain, true))
 		} else {
 			file := filepath.Join(dir, entry.Name())
 			NewDescriptor(file, pChain, false)
