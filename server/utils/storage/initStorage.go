@@ -52,4 +52,5 @@ func InitStorage() {
 			log.F(TAG, "Unknown error: %v\n", err)
 		}
 	}
+	InitIndex()
 }
