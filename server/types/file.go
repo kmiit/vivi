@@ -66,7 +66,7 @@ type DescriptorP struct {
 	Details  string   `json:"details"`
 	Ext      string   `json:"ext"`
 	FullName string   `json:"fullName"`
-	ID       int      `json:"id"`
+	ID       int64    `json:"id"`
 	Name     string   `json:"name"`
 	Parent   int      `json:"parent"`
 	Related  []string `json:"related"`
