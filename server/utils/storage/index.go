@@ -13,6 +13,7 @@ import (
 )
 
 const (
+	FILE_MAP_NAMESPACE = "file_map:"
 	FILE_NAMESPACE    = "files:"
 	FILE_UNIQUE_INDEX = "files_unique_id"
 	STORAGE_UNIQUE_ID = "storage_unique_id"
@@ -67,13 +68,14 @@ func NewDescriptor(p string, pChain string, isDir bool) string {
 		d = &des
 	} else {
 		newFileDescriptor(&des, pChain, id)
-		idS = idS + "f"
 		d = &des
 	}
 	j, _ := json.Marshal(d)
-	db.RDB.Set(ctx, FILE_NAMESPACE+pChain+":"+idS, j, 0)
 
-	return pChain + ":" + idS
+	fChain := pChain + ":" + idS
+	db.RDB.Set(ctx, FILE_NAMESPACE+fChain, j, 0)
+	db.RDB.Set(ctx, FILE_MAP_NAMESPACE+idS, fChain, 0)
+	return fChain
 }
 
 func newDirDescriptor(d *types.FDescriptor, pChain string, id int64) {
