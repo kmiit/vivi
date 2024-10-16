@@ -5,9 +5,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/kmiit/vivi/types"
-
 	"github.com/fatih/color"
+	"github.com/kmiit/vivi/types"
 )
 
 var (
