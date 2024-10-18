@@ -6,7 +6,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kmiit/vivi/utils/db"
-	"github.com/kmiit/vivi/utils/storage"
 )
 
 var ctx context.Context
@@ -17,7 +16,7 @@ func init() {
 
 func Get(c *gin.Context) {
 	id := c.Query("id")
-	items, err := db.GetAllOuter(ctx, storage.FILE_NAMESPACE)
+	items, err := db.GetAllOuter(ctx, db.FILE_NAMESPACE)
 
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})

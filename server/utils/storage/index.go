@@ -12,25 +12,18 @@ import (
 	"github.com/kmiit/vivi/utils/log"
 )
 
-const (
-	FILE_MAP_NAMESPACE = "file_map:"
-	FILE_NAMESPACE    = "files:"
-	FILE_UNIQUE_INDEX = "files_unique_id"
-	STORAGE_UNIQUE_ID = "storage_unique_id"
-)
-
 var ctx = context.Background()
 
 func InitIndex() {
 	// Initial index if file no file indexed
-	allFileKeys, err := db.GetKeys(ctx, FILE_NAMESPACE)
+	allFileKeys, err := db.GetKeys(ctx, db.FILE_NAMESPACE)
 	if err != nil {
 		log.E(TAG, err)
 	}
 	if len(allFileKeys) == 0 {
 		for _, dir := range ExistDir {
 			var (
-				id, _ = db.GetNewId(ctx, STORAGE_UNIQUE_ID)
+				id, _ = db.GetNewId(ctx, db.STORAGE_UNIQUE_ID)
 				pid   = "S" + strconv.FormatInt(id, 10)
 			)
 			MapAll(dir, pid)
@@ -60,7 +53,7 @@ func MapAll(dir string, pChain string) {
 // Creates a new descriptor for the given path
 // returns the id Chain of the descriptor
 func NewDescriptor(p string, pChain string, isDir bool) string {
-	id, _ := db.GetNewId(ctx, FILE_UNIQUE_INDEX)
+	id, _ := db.GetNewId(ctx, db.FILE_UNIQUE_INDEX)
 	idS := strconv.FormatInt(id, 10)
 	var d types.Descriptor
 	des := types.FDescriptor{Path: p}
@@ -74,8 +67,8 @@ func NewDescriptor(p string, pChain string, isDir bool) string {
 	j, _ := json.Marshal(d)
 
 	fChain := pChain + ":" + idS
-	db.RDB.Set(ctx, FILE_NAMESPACE+fChain, j, 0)
-	db.RDB.Set(ctx, FILE_MAP_NAMESPACE+idS, fChain, 0)
+	db.RDB.Set(ctx, db.FILE_NAMESPACE+fChain, j, 0)
+	db.RDB.Set(ctx, db.FILE_MAP_NAMESPACE+idS, fChain, 0)
 	return fChain
 }
 
