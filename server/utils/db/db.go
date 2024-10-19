@@ -9,7 +9,7 @@ import (
 )
 
 func GetNewId(ctx context.Context, namespace string) (int64, error) {
-	id, err := RDB.Incr(ctx, namespace).Result()
+	id, err := rdb.Incr(ctx, namespace).Result()
 	if err != nil {
 		return -1, err
 	}
@@ -22,13 +22,13 @@ func GetAllFiles(ctx context.Context, namespace string) ([]types.FDescriptor, er
 		cursor uint64
 	)
 	for {
-		keys, nextCursor, err := RDB.Scan(ctx, cursor, "files:"+"*", 0).Result()
+		keys, nextCursor, err := rdb.Scan(ctx, cursor, namespace+"*", 0).Result()
 		if err != nil {
 			return nil, err
 		}
 		cursor = nextCursor
 		for _, key := range keys {
-			val, err := RDB.Get(ctx, key).Result()
+			val, err := rdb.Get(ctx, key).Result()
 			if err != nil {
 				return nil, err
 			}
@@ -66,7 +66,10 @@ func GetKeys(ctx context.Context, namespace string) ([]string, error) {
 		cursor  uint64
 	)
 	for {
-		keys, cursor, _ := RDB.Scan(ctx, cursor, namespace+"*", 0).Result()
+		keys, cursor, err := rdb.Scan(ctx, cursor, namespace+"*", 0).Result()
+		if err != nil {
+			return nil, err
+		}
 		allKeys = append(allKeys, keys...)
 		if cursor == 0 {
 			break

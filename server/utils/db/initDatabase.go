@@ -11,20 +11,19 @@ import (
 
 const TAG = "Database"
 
-var RDB *redis.Client
+var rdb *redis.Client
 
 func InitDatabase() {
 	address := config.DatabaseConfig.DbAddress + ":" + config.DatabaseConfig.DbPort
 	ctx := context.Background()
-	RDB = redis.NewClient(&redis.Options{
+	rdb = redis.NewClient(&redis.Options{
 		Addr:     address,
 		Password: config.DatabaseConfig.DbPassword,
 		DB:       config.DatabaseConfig.DbNumber,
 	})
-	for {
-		_, err := RDB.Ping(ctx).Result()
-		if err != nil {
-			log.E(TAG, "Ping: ", err)
+	for {	
+		if err := CheckDbAlive(ctx); err != nil {
+			log.E(TAG, "Check alive failed: ", err)
 		} else {
 			log.I(TAG, "Database ready")
 			break

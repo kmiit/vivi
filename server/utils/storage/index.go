@@ -67,8 +67,8 @@ func NewDescriptor(p string, pChain string, isDir bool) string {
 	j, _ := json.Marshal(d)
 
 	fChain := pChain + ":" + idS
-	db.RDB.Set(ctx, db.FILE_NAMESPACE+fChain, j, 0)
-	db.RDB.Set(ctx, db.FILE_MAP_NAMESPACE+idS, fChain, 0)
+	db.Set(ctx, db.FILE_NAMESPACE+fChain, j, 0)
+	db.Set(ctx, db.FILE_MAP_NAMESPACE+idS, fChain, 0)
 	return fChain
 }
 
