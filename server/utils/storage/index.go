@@ -39,10 +39,10 @@ func MapAll(dir string, pID int64) {
 	for _, entry := range entries {
 		if entry.IsDir() {
 			dir := filepath.Join(dir, entry.Name())
-			MapAll(dir, NewDescriptor(dir, pID, true))
+			MapAll(dir, NewDescriptor(dir, pID))
 		} else {
 			file := filepath.Join(dir, entry.Name())
-			NewDescriptor(file, pID, false)
+			NewDescriptor(file, pID)
 		}
 	}
 }
@@ -50,14 +50,13 @@ func MapAll(dir string, pID int64) {
 // Creates a new descriptor for the given path
 // p: path of file or dir.
 // pID: parent folder id, top is storage id.
-// isDir: is dir?
 // returns the id of file or dir.
-func NewDescriptor(p string, pID int64, isDir bool) int64 {
+func NewDescriptor(p string, pID int64) int64 {
 	id, _ := db.GetNewId(ctx, db.FILE_UNIQUE_ID)
 	idS := strconv.FormatInt(id, 10)
 	var d types.Descriptor
 	des := types.FDescriptor{Path: p}
-	if isDir {
+	if info, _ := os.Stat(p); info.IsDir() {
 		newDirDescriptor(&des, pID, id)
 		d = &des
 	} else {
