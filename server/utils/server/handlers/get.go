@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/kmiit/vivi/utils/db"
@@ -16,25 +15,23 @@ func init() {
 
 func Get(c *gin.Context) {
 	id := c.Query("id")
-	items, err := db.GetAllPublic(ctx, db.FILE_NAMESPACE)
+	if id == "" {
+		items, err := db.GetAllPublic(ctx, db.FILE_NAMESPACE)
 
-	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		if err != nil {
+			c.JSON(500, gin.H{"error": err.Error()})
+		}
+		c.JSON(200, items)
+		return
 	} else {
-		if id == "" {
-			c.JSON(200, items)
-			return
+		res, err := db.GetPublic(ctx, db.FILE_NAMESPACE + id)
+		if err.Error() == "key does not exist" {
+			c.JSON(404, gin.H{"error": "Invalid ID"})
+		} else if err != nil {
+			c.JSON(500, gin.H{"error": err.Error()})
+		} else {
+			c.JSON(200, res)
 		}
-		for _, item := range items {
-			idInt, err := strconv.ParseInt(id, 10, 64)
-			if err != nil {
-				c.JSON(400, gin.H{"error": "Invalid ID"})
-				return
-			}
-			if item.ID == idInt {
-				c.JSON(200, item)
-				break
-			}
-		}
+		return
 	}
 }
