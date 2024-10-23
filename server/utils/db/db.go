@@ -9,9 +9,15 @@ import (
 )
 
 func GetNewId(ctx context.Context, namespace string) (int64, error) {
-	id, err := rdb.Incr(ctx, namespace).Result()
+	var id int64
+	var err error
+	if namespace == STORAGE_UNIQUE_ID {
+		id, err = rdb.Decr(ctx, namespace).Result()
+	} else {
+		id, err = rdb.Incr(ctx, namespace).Result()
+	}
 	if err != nil {
-		return -1, err
+		return 0, err
 	}
 	return id, err
 }
@@ -48,14 +54,14 @@ func GetAllFiles(ctx context.Context, namespace string) ([]types.FDescriptor, er
 	return files, nil
 }
 
-func GetAllOuter(ctx context.Context, namespace string) ([]types.DescriptorO, error) {
+func GetAllPublic(ctx context.Context, namespace string) ([]types.DescriptorP, error) {
 	allFiles, err := GetAllFiles(ctx, namespace)
 	if err != nil {
 		return nil, err
 	}
-	files := []types.DescriptorO{}
+	files := []types.DescriptorP{}
 	for _, file := range allFiles {
-		files = append(files, file.Outer)
+		files = append(files, file.Public)
 	}
 	return files, nil
 }

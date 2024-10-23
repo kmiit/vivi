@@ -22,18 +22,15 @@ func InitIndex() {
 	}
 	if len(allFileKeys) == 0 {
 		for _, dir := range ExistDir {
-			var (
-				id, _ = db.GetNewId(ctx, db.STORAGE_UNIQUE_ID)
-				pid   = "S" + strconv.FormatInt(id, 10)
-			)
-			MapAll(dir, pid)
+			id, _ := db.GetNewId(ctx, db.STORAGE_UNIQUE_ID)
+			MapAll(dir, id)
 		}
 	}
 }
 
 // map all files and directories in the given directory
 // Usually used when a new storage or folder added.
-func MapAll(dir string, pChain string) {
+func MapAll(dir string, pID int64) {
 	entries, err := os.ReadDir(dir)
 	if err != nil {
 		log.E(TAG, err)
@@ -42,58 +39,60 @@ func MapAll(dir string, pChain string) {
 	for _, entry := range entries {
 		if entry.IsDir() {
 			dir := filepath.Join(dir, entry.Name())
-			MapAll(dir, NewDescriptor(dir, pChain, true))
+			MapAll(dir, NewDescriptor(dir, pID, true))
 		} else {
 			file := filepath.Join(dir, entry.Name())
-			NewDescriptor(file, pChain, false)
+			NewDescriptor(file, pID, false)
 		}
 	}
 }
 
 // Creates a new descriptor for the given path
-// returns the id Chain of the descriptor
-func NewDescriptor(p string, pChain string, isDir bool) string {
-	id, _ := db.GetNewId(ctx, db.FILE_UNIQUE_INDEX)
+// p: path of file or dir.
+// pID: parent folder id, top is storage id.
+// isDir: is dir?
+// returns the id of file or dir.
+func NewDescriptor(p string, pID int64, isDir bool) int64 {
+	id, _ := db.GetNewId(ctx, db.FILE_UNIQUE_ID)
 	idS := strconv.FormatInt(id, 10)
 	var d types.Descriptor
 	des := types.FDescriptor{Path: p}
 	if isDir {
-		newDirDescriptor(&des, pChain, id)
+		newDirDescriptor(&des, pID, id)
 		d = &des
 	} else {
-		newFileDescriptor(&des, pChain, id)
+		newFileDescriptor(&des, pID, id)
 		d = &des
 	}
 	j, _ := json.Marshal(d)
 
-	fChain := pChain + ":" + idS
-	db.Set(ctx, db.FILE_NAMESPACE+fChain, j, 0)
-	db.Set(ctx, db.FILE_MAP_NAMESPACE+idS, fChain, 0)
-	return fChain
+	db.Set(ctx, db.FILE_NAMESPACE+idS, j, 0)
+	db.Set(ctx, db.FILE_MAP_NAMESPACE+p, idS, 0)
+	return id
 }
 
-func newDirDescriptor(d *types.FDescriptor, pChain string, id int64) {
+func newDirDescriptor(d *types.FDescriptor, pID int64, id int64) {
 	_, dir := filepath.Split(d.Path)
-	d.Outer.ID = id
-	d.Outer.IsDir = true
-	d.Outer.Name = dir
-	d.Outer.Parent = pChain
+	d.Public.ID = id
+	d.Public.IsDir = true
+	d.Public.Name = dir
+	d.Public.Parent = pID
 }
 
-func newFileDescriptor(f *types.FDescriptor, pChain string, id int64) {
+func newFileDescriptor(f *types.FDescriptor, pID int64, id int64) {
 	parent, file := filepath.Split(f.Path)
 
 	// Split the file name and extension
 	ext := filepath.Ext(file)
 	name := file[:len(file)-len(ext)]
 
-	f.Outer.Ext = ext
-	f.Outer.FullName = file
-	f.Outer.ID = id
-	f.Outer.IsDir = false
-	f.Outer.Name = name
-	f.Outer.Parent = pChain
-	f.Outer.Related = findRelated(parent, name)
+	f.Public.Ext = ext
+	f.Public.FullName = file
+	f.Public.ID = id
+	f.Public.IsDir = false
+	f.Public.Name = name
+	f.Public.Parent = pID
+	f.Public.Related = findRelated(parent, name)
 }
 
 // Find Related files such as ass file in the directory

@@ -9,9 +9,10 @@ import (
 )
 
 const (
+	FILE_GROUP_UNIQUE_ID = "file_group_unique_id"
 	FILE_MAP_NAMESPACE = "file_map:"
 	FILE_NAMESPACE    = "files:"
-	FILE_UNIQUE_INDEX = "files_unique_id"
+	FILE_UNIQUE_ID = "file_unique_id"
 	STORAGE_UNIQUE_ID = "storage_unique_id"
 )
 
