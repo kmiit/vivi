@@ -14,7 +14,7 @@ func InitServer() {
 	r := gin.Default()
 	initRouter(r)
 	address := config.ServerConfig.Address + ":" + config.ServerConfig.Port
-	log.I(TAG, "vivi is listening on: ", address)
+	log.I(TAG, "vivi is listening on:", address)
 	s := &http.Server{
 		Addr:           address,
 		Handler:        r,

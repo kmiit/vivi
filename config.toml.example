@@ -9,7 +9,6 @@ port    = "8080"
 
 # Storage config
 [storage]
-
 # A string list of local directory to watch, such as: "./storage"
 watchPath = []
 
@@ -17,5 +16,5 @@ watchPath = []
 [database]
 dbAddress = "127.0.0.1"
 dbPort = "6379"
-password = ""
+dbPassword = ""
 db = 0

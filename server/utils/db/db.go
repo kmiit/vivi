@@ -50,7 +50,7 @@ func GetAllFiles(ctx context.Context, namespace string) ([]types.FDescriptor, er
 			break
 		}
 	}
-	log.V(TAG, "Get all files: ", files)
+	log.V(TAG, "Get all files:", files)
 	return files, nil
 }
 

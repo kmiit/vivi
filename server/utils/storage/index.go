@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"context"
 	"encoding/json"
 	"os"
 	"path/filepath"
@@ -10,9 +9,8 @@ import (
 	"github.com/kmiit/vivi/types"
 	"github.com/kmiit/vivi/utils/db"
 	"github.com/kmiit/vivi/utils/log"
+	"github.com/redis/go-redis/v9"
 )
-
-var ctx = context.Background()
 
 func InitIndex() {
 	// Initial index if file no file indexed
@@ -22,15 +20,18 @@ func InitIndex() {
 	}
 	if len(allFileKeys) == 0 {
 		for _, dir := range ExistDir {
+			log.V(TAG, "Mapping storage:", dir)
+			// Map storages and files in them
 			id, _ := db.GetNewId(ctx, db.STORAGE_UNIQUE_ID)
-			MapAll(dir, id)
+			db.Set(ctx, db.FILE_MAP_NAMESPACE+dir, id, 0)
+			MapAll(dir)
 		}
 	}
 }
 
 // map all files and directories in the given directory
 // Usually used when a new storage or folder added.
-func MapAll(dir string, pID int64) {
+func MapAll(dir string) {
 	entries, err := os.ReadDir(dir)
 	if err != nil {
 		log.E(TAG, err)
@@ -39,21 +40,38 @@ func MapAll(dir string, pID int64) {
 	for _, entry := range entries {
 		if entry.IsDir() {
 			dir := filepath.Join(dir, entry.Name())
-			MapAll(dir, NewDescriptor(dir, pID))
+			MapAll(dir)
 		} else {
 			file := filepath.Join(dir, entry.Name())
-			NewDescriptor(file, pID)
+			NewDescriptor(file)
 		}
 	}
 }
 
 // Creates a new descriptor for the given path
 // p: path of file or dir.
-// pID: parent folder id, top is storage id.
-// returns the id of file or dir.
-func NewDescriptor(p string, pID int64) int64 {
-	id, _ := db.GetNewId(ctx, db.FILE_UNIQUE_ID)
-	idS := strconv.FormatInt(id, 10)
+// returns the id of file or dir, in string.
+func NewDescriptor(p string) (int64, error) {
+	log.V(TAG, "NewDescriptor triggered with path:", p)
+	// Try to get the id of given file, return "" if already exists.
+	id, err := db.GetIdByPath(ctx, p)
+	if err == nil {
+		log.W(TAG, "File or dir already mapped!")
+		return  id, nil
+	}
+
+	// Try to get the parent id of file, create a map if not exists.
+	parentPath, _ := filepath.Split(p)
+	if parentPath[len(parentPath)-1:] == "/" {
+		parentPath = parentPath[:len(parentPath)-1]
+	}
+	pID, err := db.GetIdByPath(ctx, parentPath)
+ 	if err == redis.Nil {
+		log.W(TAG, "Parent path doesn't exist, mapping:", parentPath)
+		pID, _ = NewDescriptor(parentPath)
+	}
+
+	id, _ = db.GetNewId(ctx, db.FILE_UNIQUE_ID)
 	var d types.Descriptor
 	des := types.FDescriptor{Path: p}
 	if info, _ := os.Stat(p); info.IsDir() {
@@ -65,9 +83,22 @@ func NewDescriptor(p string, pID int64) int64 {
 	}
 	j, _ := json.Marshal(d)
 
-	db.Set(ctx, db.FILE_NAMESPACE+idS, j, 0)
-	db.Set(ctx, db.FILE_MAP_NAMESPACE+p, idS, 0)
-	return id
+	idS := strconv.FormatInt(id, 10)
+	db.Set(ctx, db.FILE_NAMESPACE + idS, j, 0)
+	db.Set(ctx, db.FILE_MAP_NAMESPACE + p, id, 0)
+	return id, nil
+}
+
+// Func to remove a mapped file.
+func RemoveFile(p string) {
+	id, err := db.GetIdByPath(ctx, p)
+	if err != nil {
+		log.E(TAG, err)
+	}
+
+	idS := strconv.FormatInt(id, 10)
+	db.Del(ctx, db.FILE_MAP_NAMESPACE + p)
+	db.Del(ctx, db.FILE_NAMESPACE + idS)
 }
 
 func newDirDescriptor(d *types.FDescriptor, pID int64, id int64) {

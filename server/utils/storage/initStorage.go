@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"context"
 	"os"
 	"path"
 	"path/filepath"
@@ -10,7 +11,7 @@ import (
 )
 
 const TAG = "Storage"
-
+var ctx = context.Background()
 var ExistDir []string
 
 func InitStorage() {
@@ -28,28 +29,27 @@ func InitStorage() {
 		switch {
 		case err == nil:
 			if info.IsDir() {
-				log.I(TAG, "Path found: ", p)
+				log.I(TAG, "Path found:", p)
 				ExistDir = append(ExistDir, fp)
 			} else {
-				log.E(TAG, "Path found but isn't a directory: ", p)
+				log.E(TAG, "Path found but isn't a directory:", p)
 			}
 		case os.IsNotExist(err):
 			//	path not found
-			log.W(TAG, "Path not found: ", p)
-			log.I(TAG, "Creating directory: ", p)
+			log.W(TAG, "Path not found:", p)
+			log.I(TAG, "Creating directory:", p)
 			if err := os.MkdirAll(fp, os.ModePerm); err != nil {
-				log.E(TAG, "Failed to create directory: ", p)
+				log.E(TAG, "Failed to create directory:", p)
 			} else {
-				log.I(TAG, "Directory created: ", p)
+				log.I(TAG, "Directory created:", p)
 				ExistDir = append(ExistDir, fp)
 			}
 		case os.IsPermission(err):
 			// permission denied
 			log.E(TAG, "Have no permission to visit path:", p)
-
 		default:
 			// unknown error
-			log.F(TAG, "Unknown error: %v\n", err)
+			log.F(TAG, "Unknown error:", err)
 		}
 	}
 	InitIndex()

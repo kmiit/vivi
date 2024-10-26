@@ -5,7 +5,6 @@ import (
 
 	"github.com/kmiit/vivi/types"
 	"github.com/kmiit/vivi/utils/log"
-
 	"github.com/pelletier/go-toml/v2"
 )
 
