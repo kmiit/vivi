@@ -13,16 +13,12 @@ import (
 )
 
 func InitIndex() {
-	// Initial index if file no file indexed
-	allFileKeys, err := db.GetKeys(ctx, db.FILE_NAMESPACE)
-	if err != nil {
-		log.E(TAG, err)
-	}
-
-	// remap if not first run
-	if len(allFileKeys) != 0 {
+	// Do reMap if not the first time to run
+	if _, err := db.Get(ctx, db.IS_FIRST_RUN); err != redis.Nil {
 		log.V(TAG, "Syncing changed files while service offline...")
 		reMap()
+	} else {
+		log.I(TAG, "First run detected!")
 	}
 
 	// always do MapAll, mainly handles new file added
@@ -37,6 +33,7 @@ func InitIndex() {
 			MapAll(dir)
 		}
 	}
+	db.Set(ctx, db.IS_FIRST_RUN, false, 0)
 }
 
 // map all files and directories in the given directory
@@ -67,8 +64,8 @@ func NewDescriptor(p string) (int64, error) {
 	// Try to get the id of given file, return the id if already exists.
 	id, err := db.GetIdByPath(ctx, p)
 	if err == nil {
-		log.V(TAG, "File or dir already mapped!")
-		return  id, nil
+		log.V(TAG, "File or dir already mapped:", p)
+		return id, nil
 	}
 
 	// Try to get the parent id of file, create a map if not exists.
@@ -177,13 +174,14 @@ func reMap() {
 		switch {
 		case err == nil:
 			file, _ := db.GetPublic(ctx, key)
+			// Handle file changes, file id always>0, storage id always<0.
 			if info.IsDir() != file.IsDir && file.ID > 0 {
 				log.V(TAG, "File type changed:", filePath)
 				RemoveFile(filePath)
 				NewDescriptor(filePath)
 			}
 		case os.IsNotExist(err):
-			//	path not found
+			// File removed
 			log.V(TAG, "File or dir removed:", filePath)
 			RemoveFile(filePath)
 		default:

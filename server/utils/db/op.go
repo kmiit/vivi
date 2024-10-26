@@ -11,6 +11,7 @@ const (
 	FILE_MAP_NAMESPACE = "file_map:"
 	FILE_NAMESPACE    = "files:"
 	FILE_UNIQUE_ID = "file_unique_id"
+	IS_FIRST_RUN = "is_first_run"
 	STORAGE_UNIQUE_ID = "storage_unique_id"
 )
 
