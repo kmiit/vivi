@@ -46,7 +46,7 @@ func W(tag string, log ...any) {
 func logit(loglevel types.LogLevel, tag string, log []any) {
 	time := time.Now().Format("2006/01/02 15:04:05.00")
 	prefix := fmt.Sprintf("[%s][%s]\t", loglevel.String, tag)
-	content := fmt.Sprint(log...)
+	content := fmt.Sprintln(log...)
 	logline := fmt.Sprintf("%s %s %s", time, prefix, content)
-	loglevel.Color.Println(logline)
+	loglevel.Color.Printf("%s", logline)
 }
