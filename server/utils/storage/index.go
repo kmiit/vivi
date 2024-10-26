@@ -120,7 +120,7 @@ func newDirDescriptor(d *types.FDescriptor, pID int64, id int64) {
 }
 
 func newFileDescriptor(f *types.FDescriptor, pID int64, id int64) {
-	parent, file := filepath.Split(f.Path)
+	_, file := filepath.Split(f.Path)
 
 	// Split the file name and extension
 	ext := filepath.Ext(file)
@@ -132,32 +132,6 @@ func newFileDescriptor(f *types.FDescriptor, pID int64, id int64) {
 	f.Public.IsDir = false
 	f.Public.Name = name
 	f.Public.Parent = pID
-	f.Public.Related = findRelated(parent, f)
-}
-
-// Find Related files such as ass file in the directory
-// p: parent path
-// f: file descriptor
-func findRelated(p string, f *types.FDescriptor) (related []string) {
-	var files []string
-	err := filepath.Walk(p, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		files = append(files, path)
-		return nil
-	})
-	if err != nil {
-		return nil
-	}
-	for _, file := range files {
-		_, fn := filepath.Split(file)
-		if fn[:len(fn)-len(filepath.Ext(fn))] == f.Public.Name && fn != f.Public.FullName {
-			related = append(related, fn)
-		}
-	}
-
-	return related
 }
 
 // Redo mapping files

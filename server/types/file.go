@@ -54,6 +54,5 @@ type DescriptorP struct {
 	IsDir    bool     `json:"isDir"`
 	Name     string   `json:"name"`
 	Parent   int64   `json:"parent"`
-	Related  []string `json:"related"`
 	SubFiles []int    `json:"subFiles"`
 }
