@@ -50,10 +50,10 @@ func MapAll(dir string) {
 
 // Creates a new descriptor for the given path
 // p: path of file or dir.
-// returns the id of file or dir, in string.
+// returns the id of file or dir.
 func NewDescriptor(p string) (int64, error) {
 	log.V(TAG, "NewDescriptor triggered with path:", p)
-	// Try to get the id of given file, return "" if already exists.
+	// Try to get the id of given file, return the id if already exists.
 	id, err := db.GetIdByPath(ctx, p)
 	if err == nil {
 		log.W(TAG, "File or dir already mapped!")
@@ -71,18 +71,17 @@ func NewDescriptor(p string) (int64, error) {
 		pID, _ = NewDescriptor(parentPath)
 	}
 
+	// Map new file or dir
 	id, _ = db.GetNewId(ctx, db.FILE_UNIQUE_ID)
-	var d types.Descriptor
 	des := types.FDescriptor{Path: p}
 	if info, _ := os.Stat(p); info.IsDir() {
 		newDirDescriptor(&des, pID, id)
-		d = &des
 	} else {
 		newFileDescriptor(&des, pID, id)
-		d = &des
 	}
-	j, _ := json.Marshal(d)
+	j, _ := json.Marshal(des)
 
+	// Save to database
 	idS := strconv.FormatInt(id, 10)
 	db.Set(ctx, db.FILE_NAMESPACE + idS, j, 0)
 	db.Set(ctx, db.FILE_MAP_NAMESPACE + p, id, 0)
