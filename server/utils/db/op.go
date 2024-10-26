@@ -2,10 +2,7 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"time"
-
-	"github.com/redis/go-redis/v9"
 )
 
 const (
@@ -33,9 +30,7 @@ func Get(ctx context.Context, key string) (string, error) {
 		return "", err
 	}
     val, err := rdb.Get(ctx, key).Result()
-    if err == redis.Nil {
-        return "", fmt.Errorf("key does not exist")
-    } else if err != nil {
+	if err != nil {
         return "", err
     }
     return val, nil

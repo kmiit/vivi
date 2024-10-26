@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kmiit/vivi/utils/db"
+	"github.com/redis/go-redis/v9"
 )
 
 var ctx context.Context
@@ -25,7 +26,7 @@ func Get(c *gin.Context) {
 		return
 	} else {
 		res, err := db.GetPublic(ctx, db.FILE_NAMESPACE + id)
-		if err.Error() == "key does not exist" {
+		if err == redis.Nil {
 			c.JSON(404, gin.H{"error": "Invalid ID"})
 		} else if err != nil {
 			c.JSON(500, gin.H{"error": err.Error()})
