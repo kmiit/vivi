@@ -86,10 +86,10 @@ func GetKeys(ctx context.Context, namespace string) ([]string, error) {
 	return allKeys, nil
 }
 
-func GetPublic(ctx context.Context, key string) (interface{}, error) {
+func GetPublic(ctx context.Context, key string) (types.DescriptorP, error) {
 	res, err := Get(ctx, key)
 	if err != nil {
-		return nil, err
+		return types.DescriptorP{}, err
 	}
 	var file types.FDescriptor
 	err = json.Unmarshal([]byte(res), &file)

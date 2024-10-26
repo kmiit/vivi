@@ -18,12 +18,22 @@ func InitIndex() {
 	if err != nil {
 		log.E(TAG, err)
 	}
-	if len(allFileKeys) == 0 {
-		for _, dir := range ExistDir {
-			log.V(TAG, "Mapping storage:", dir)
-			// Map storages and files in them
+
+	// remap if not first run
+	if len(allFileKeys) != 0 {
+		log.V(TAG, "Syncing changed files while service offline...")
+		reMap()
+	}
+
+	// always do MapAll, mainly handles new file added
+	for _, dir := range ExistDir {
+		_, err := db.GetIdByPath(ctx, db.FILE_MAP_NAMESPACE + dir)
+		if err == redis.Nil {
+			// Map storages newly added
 			id, _ := db.GetNewId(ctx, db.STORAGE_UNIQUE_ID)
 			db.Set(ctx, db.FILE_MAP_NAMESPACE + dir, id, 0)
+			MapAll(dir)
+		} else {
 			MapAll(dir)
 		}
 	}
@@ -57,7 +67,7 @@ func NewDescriptor(p string) (int64, error) {
 	// Try to get the id of given file, return the id if already exists.
 	id, err := db.GetIdByPath(ctx, p)
 	if err == nil {
-		log.W(TAG, "File or dir already mapped!")
+		log.V(TAG, "File or dir already mapped!")
 		return  id, nil
 	}
 
@@ -68,7 +78,7 @@ func NewDescriptor(p string) (int64, error) {
 	}
 	pID, err := db.GetIdByPath(ctx, parentPath)
  	if err == redis.Nil {
-		log.W(TAG, "Parent path doesn't exist, mapping:", parentPath)
+		log.W(TAG, "Path doesn't exist, mapping:", parentPath)
 		pID, _ = NewDescriptor(parentPath)
 	}
 
@@ -90,7 +100,9 @@ func NewDescriptor(p string) (int64, error) {
 }
 
 // Func to remove a mapped file.
+// p: path of removed file
 func RemoveFile(p string) {
+	log.V(TAG, "Removing:", p)
 	id, err := db.GetIdByPath(ctx, p)
 	if err != nil {
 		log.E(TAG, err)
@@ -149,4 +161,34 @@ func findRelated(p string, f *types.FDescriptor) (related []string) {
 	}
 
 	return related
+}
+
+// Redo mapping files
+// handles: IsDir changed, file removed
+// New file added already handled by MapAll()
+func reMap() {
+	keys, err := db.GetKeys(ctx, db.FILE_MAP_NAMESPACE)
+	if err != nil {
+		log.F(TAG, err)
+	}
+	for _, key := range keys {
+		filePath := key[len(db.FILE_MAP_NAMESPACE):]
+		info, err := os.Stat(filePath)
+		switch {
+		case err == nil:
+			file, _ := db.GetPublic(ctx, key)
+			if info.IsDir() != file.IsDir && file.ID > 0 {
+				log.V(TAG, "File type changed:", filePath)
+				RemoveFile(filePath)
+				NewDescriptor(filePath)
+			}
+		case os.IsNotExist(err):
+			//	path not found
+			log.V(TAG, "File or dir removed:", filePath)
+			RemoveFile(filePath)
+		default:
+			// unknown error
+			log.F(TAG, "Unknown error:", err)
+		}
+	}
 }
