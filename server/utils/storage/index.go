@@ -128,7 +128,7 @@ func newFileDescriptor(f *types.FDescriptor, pID int64, id int64) {
 
 // Find Related files such as ass file in the directory
 // p: parent path
-// f: file name, usually FileDescriptor.Punlic.Name
+// f: file descriptor
 func findRelated(p string, f *types.FDescriptor) (related []string) {
 	var files []string
 	err := filepath.Walk(p, func(path string, info os.FileInfo, err error) error {
