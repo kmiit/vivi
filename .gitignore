@@ -1,5 +1,5 @@
-server/storage
-server/vivi*
+storage
+out
 *.bak
 *.rdb
 config.toml
