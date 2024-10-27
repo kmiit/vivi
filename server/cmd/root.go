@@ -25,4 +25,5 @@ func Execute() {
 
 func init() {
 	rootCmd.PersistentFlags().StringVarP(&flags.ConfigFile, "config", "c", "", "config file")
+	rootCmd.PersistentFlags().IntVarP(&flags.LogLevel, "loglevel", "l", 3, "log level(0-5)")
 }

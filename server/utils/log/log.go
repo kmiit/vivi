@@ -6,8 +6,11 @@ import (
 	"time"
 
 	"github.com/fatih/color"
+	"github.com/kmiit/vivi/cmd/flags"
 	"github.com/kmiit/vivi/types"
 )
+
+var logLevel = &flags.LogLevel
 
 var (
 	Fatal   = types.LogLevel{String: "FATAL", Index: 0, Color: color.RGB(174, 138, 190)}
@@ -19,28 +22,40 @@ var (
 )
 
 func D(tag string, log ...any) {
-	logit(Debug, tag, log)
+	if *logLevel >= Debug.Index {
+		logit(Debug, tag, log)
+	}
 }
 
 func E(tag string, log ...any) {
-	logit(Error, tag, log)
+	if *logLevel >= Error.Index {
+		logit(Error, tag, log)
+	}
 }
 
 func F(tag string, log ...any) {
-	logit(Fatal, tag, log)
-	os.Exit(1)
+	if *logLevel >= Fatal.Index {
+		logit(Fatal, tag, log)
+		os.Exit(1)
+	}
 }
 
 func I(tag string, log ...any) {
-	logit(Info, tag, log)
+	if *logLevel >= Info.Index {
+		logit(Info, tag, log)
+	}
 }
 
 func V(tag string, log ...any) {
-	logit(Verbose, tag, log)
+	if *logLevel >= Verbose.Index {
+		logit(Verbose, tag, log)
+	}
 }
 
 func W(tag string, log ...any) {
-	logit(Warn, tag, log)
+	if *logLevel >= Warn.Index {
+		logit(Warn, tag, log)
+	}
 }
 
 func logit(loglevel types.LogLevel, tag string, log []any) {

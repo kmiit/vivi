@@ -9,10 +9,10 @@ import (
 const TAG = "Config"
 
 var (
-	Config         types.Config
-	DatabaseConfig types.DatabaseConfig
-	ServerConfig   types.ServerConfig
-	StorageConfig  types.StorageConfig
+	Config			types.Config
+	DatabaseConfig	types.DatabaseConfig
+	ServerConfig	types.ServerConfig
+	StorageConfig	types.StorageConfig
 )
 
 func InitConfig() {
