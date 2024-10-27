@@ -23,7 +23,7 @@ func InitIndex() {
 			log.V(TAG, "Mapping storage:", dir)
 			// Map storages and files in them
 			id, _ := db.GetNewId(ctx, db.STORAGE_UNIQUE_ID)
-			db.Set(ctx, db.FILE_MAP_NAMESPACE+dir, id, 0)
+			db.Set(ctx, db.FILE_MAP_NAMESPACE + dir, id, 0)
 			MapAll(dir)
 		}
 	}
@@ -40,6 +40,7 @@ func MapAll(dir string) {
 	for _, entry := range entries {
 		if entry.IsDir() {
 			dir := filepath.Join(dir, entry.Name())
+			NewDescriptor(dir)
 			MapAll(dir)
 		} else {
 			file := filepath.Join(dir, entry.Name())
@@ -102,6 +103,7 @@ func RemoveFile(p string) {
 
 func newDirDescriptor(d *types.FDescriptor, pID int64, id int64) {
 	_, dir := filepath.Split(d.Path)
+	d.Public.FullName = dir
 	d.Public.ID = id
 	d.Public.IsDir = true
 	d.Public.Name = dir
@@ -121,13 +123,13 @@ func newFileDescriptor(f *types.FDescriptor, pID int64, id int64) {
 	f.Public.IsDir = false
 	f.Public.Name = name
 	f.Public.Parent = pID
-	f.Public.Related = findRelated(parent, name)
+	f.Public.Related = findRelated(parent, f)
 }
 
 // Find Related files such as ass file in the directory
 // p: parent path
-// f: file name, usually FileDescriptor.Private.Name
-func findRelated(p string, f string) (related []string) {
+// f: file name, usually FileDescriptor.Punlic.Name
+func findRelated(p string, f *types.FDescriptor) (related []string) {
 	var files []string
 	err := filepath.Walk(p, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -137,10 +139,11 @@ func findRelated(p string, f string) (related []string) {
 		return nil
 	})
 	if err != nil {
+		return nil
 	}
 	for _, file := range files {
 		_, fn := filepath.Split(file)
-		if fn[:len(fn)-len(filepath.Ext(fn))] == f {
+		if fn[:len(fn)-len(filepath.Ext(fn))] == f.Public.Name && fn != f.Public.FullName {
 			related = append(related, file)
 		}
 	}
