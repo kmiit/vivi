@@ -144,7 +144,7 @@ func findRelated(p string, f *types.FDescriptor) (related []string) {
 	for _, file := range files {
 		_, fn := filepath.Split(file)
 		if fn[:len(fn)-len(filepath.Ext(fn))] == f.Public.Name && fn != f.Public.FullName {
-			related = append(related, file)
+			related = append(related, fn)
 		}
 	}
 
