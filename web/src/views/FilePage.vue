@@ -1,17 +1,3 @@
-
-<script>
-import Getdata from "../scripts/get.ts"
-
-let data_ = await Getdata()
-console.log(data_)
-export default {
-  data (){
-    return {
-      data: data_,
-    }
-}}
-</script>
-
 <template>
   <el-card v-for="item in data">
     <template #header>
@@ -26,3 +12,15 @@ export default {
     <template #footer>is dir: {{ item.isDir }}</template>
   </el-card>
 </template>
+
+<script lang="ts">
+import Getdata from "@/scripts/get"
+
+let data_ = await Getdata()
+export default {
+  data (){
+    return {
+      data: data_,
+    }
+}}
+</script>
