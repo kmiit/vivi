@@ -3,6 +3,7 @@ package storage
 import (
 	"encoding/json"
 	"os"
+	"path"
 	"path/filepath"
 	"strconv"
 
@@ -23,11 +24,11 @@ func InitIndex() {
 
 	// always do MapAll, mainly handles new file added
 	for _, dir := range ExistDir {
-		_, err := db.GetIdByPath(ctx, db.FILE_MAP_NAMESPACE + dir)
+		_, err := db.GetIdByPath(ctx, db.FILE_MAP_NAMESPACE+dir)
 		if err == redis.Nil {
 			// Map storages newly added
 			id, _ := db.GetNewId(ctx, db.STORAGE_UNIQUE_ID)
-			db.Set(ctx, db.FILE_MAP_NAMESPACE + dir, id, 0)
+			db.Set(ctx, db.FILE_MAP_NAMESPACE+dir, id, 0)
 			MapAll(dir)
 		} else {
 			MapAll(dir)
@@ -46,11 +47,11 @@ func MapAll(dir string) {
 
 	for _, entry := range entries {
 		if entry.IsDir() {
-			dir := filepath.Join(dir, entry.Name())
+			dir := path.Join(dir, entry.Name())
 			NewDescriptor(dir)
 			MapAll(dir)
 		} else {
-			file := filepath.Join(dir, entry.Name())
+			file := path.Join(dir, entry.Name())
 			NewDescriptor(file)
 		}
 	}
@@ -74,7 +75,7 @@ func NewDescriptor(p string) (int64, error) {
 		parentPath = parentPath[:len(parentPath)-1]
 	}
 	pID, err := db.GetIdByPath(ctx, parentPath)
- 	if err == redis.Nil {
+	if err == redis.Nil {
 		log.W(TAG, "Path doesn't exist, mapping:", parentPath)
 		pID, _ = NewDescriptor(parentPath)
 	}
@@ -91,8 +92,8 @@ func NewDescriptor(p string) (int64, error) {
 
 	// Save to database
 	idS := strconv.FormatInt(id, 10)
-	db.Set(ctx, db.FILE_NAMESPACE + idS, j, 0)
-	db.Set(ctx, db.FILE_MAP_NAMESPACE + p, id, 0)
+	db.Set(ctx, db.FILE_NAMESPACE+idS, j, 0)
+	db.Set(ctx, db.FILE_MAP_NAMESPACE+p, id, 0)
 	return id, nil
 }
 
@@ -106,8 +107,8 @@ func RemoveFile(p string) {
 	}
 
 	idS := strconv.FormatInt(id, 10)
-	db.Del(ctx, db.FILE_MAP_NAMESPACE + p)
-	db.Del(ctx, db.FILE_NAMESPACE + idS)
+	db.Del(ctx, db.FILE_MAP_NAMESPACE+p)
+	db.Del(ctx, db.FILE_NAMESPACE+idS)
 }
 
 func newDirDescriptor(d *types.FDescriptor, pID int64, id int64) {
