@@ -1,52 +1,43 @@
 <template>
-  <el-container>
-    <el-main>
-      <RouterView/>
-    </el-main>
-  </el-container>
-  <template id="main">
-    <el-menu
-      :default-active="activeIndex"
-      class="el-menu"
-      mode="horizontal"
-      background-color="#545c64"
-      text-color="#fff"
-      active-text-color="#ffd04b"
-    >
-      <el-menu-item index="1">
-        <router-link to="/">Main Page</router-link>
-      </el-menu-item>
-      <el-menu-item index="2">
-        <router-link to="/files">Files</router-link>
-      </el-menu-item>
-      <el-menu-item index="3">
-        <router-link to="/self">Me</router-link>
-      </el-menu-item>
-    </el-menu>
-  </template>
+  <div id="fcontainer">
+    <el-container class="main-container">
+      <el-header id="header">
+        <HeaderView/>
+      </el-header>
+      <el-main id="main-content">
+        <RouterView/>
+      </el-main>
+      <el-footer id="footer">
+         <FooterView/>
+      </el-footer>
+    </el-container>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import { ref } from 'vue'
-  
-const activeIndex = ref('1')
+import FooterView from '@/components/FooterView.vue'
+import HeaderView from '@/components/HeaderView.vue'
 </script>
+
 <style>
-#main {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+#header {
+  top: 0;
+  left: 0;
+  position: fixed;
+  width: 100%;
 }
-.content {
-  flex: 1;
-  padding: 20px;
-  overflow-y: auto;
+
+#main-container {
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
 }
-.el-menu {
+
+#footer {
   position: fixed;
   bottom: 0;
   left: 0;
-  right: 0;
+  width: 100%;
 }
 </style>
