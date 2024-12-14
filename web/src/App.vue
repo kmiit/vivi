@@ -21,24 +21,15 @@ import FooterView from '@/components/FooterView.vue'
 </script>
 
 <style>
-#header {
-  top: 0;
-  left: 0;
-  position: fixed;
-  width: 100%;
+html, body, #app {
+  padding: 0;
 }
 
-#main-container {
-  border-radius: 0;
-  padding: 0;
-  margin: 0;
+.main-container {
+  height: 100vh;
 }
 
 #footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
   padding: 0;
 }
 </style>
