@@ -1,23 +1,17 @@
 <template>
   <el-menu
     mode="horizontal"
+    :ellipsis="false"
     background-color="#545c64"
     :default-active="activeIndex"
+    :router="true"
     text-color="#fff"
     active-text-color="#ffd04b"
     id="foobar">
-      <el-menu-item index="1" class="fooitem">
-        <router-link to="/">Main Page</router-link>
-      </el-menu-item>
-      <el-menu-item index="2" class="fooitem">
-        <router-link to="/files">Search</router-link>
-      </el-menu-item>
-      <el-menu-item index="3" class="fooitem">
-        <router-link to="/files">Files</router-link>
-      </el-menu-item>
-      <el-menu-item index="4" class="fooitem">
-        <router-link to="/self">Me</router-link>
-      </el-menu-item>
+      <el-menu-item index="/" class="fooitem">Main Page</el-menu-item>
+      <el-menu-item index="/search" class="fooitem">Search</el-menu-item>
+      <el-menu-item index="/files" class="fooitem">Files</el-menu-item>
+      <el-menu-item index="/self" class="fooitem">Me</el-menu-item>
     </el-menu>
 </template>
 
@@ -27,27 +21,20 @@ import { useRoute } from 'vue-router';
 
 const route = useRoute();
 
-const activeIndex = ref('1');
+const activeIndex = ref('/');
 // 监听路由变化并动态更新 `default-active` 的值
 watch(route, () => {
-  if (route.path === '/') {
-    activeIndex.value = '1';
-  } else if (route.path === '/search') {
-    activeIndex.value = '2';
-  } else if (route.path === '/files') {
-    activeIndex.value = '3';
-  } else if (route.path === '/self') {
-    activeIndex.value = '4';
-  }
+  activeIndex.value = route.path
 }, { immediate: true });
 </script>
 
 <style>
 #foobar {
-  justify-content: space-between;
+  display: flex;
+  justify-content: space-evenly;
 }
 .fooitem {
-  flex: 1;
+  flex: auto;
   text-align: center;
 }
 </style>
