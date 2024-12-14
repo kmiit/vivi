@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import FilePage from '@/views/FilePage.vue'
 import HomePage from '@/views/HomePage.vue'
+import SearchPage from '@/views/SearchPage.vue'
 import SelfPage from '@/views/SelfPage.vue'
 
 const router = createRouter({
@@ -15,6 +16,11 @@ const router = createRouter({
       path: '/files',
       name: 'filepage',
       component: FilePage
+    },
+    {
+      path: '/search',
+      name: 'searchpage',
+      component: SearchPage
     },
     {
       path: '/self',

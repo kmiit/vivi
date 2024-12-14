@@ -6,13 +6,16 @@
     text-color="#fff"
     active-text-color="#ffd04b"
     id="foobar">
-      <el-menu-item index="1">
+      <el-menu-item index="1" class="fooitem">
         <router-link to="/">Main Page</router-link>
       </el-menu-item>
-      <el-menu-item index="2">
+      <el-menu-item index="2" class="fooitem">
+        <router-link to="/files">Search</router-link>
+      </el-menu-item>
+      <el-menu-item index="3" class="fooitem">
         <router-link to="/files">Files</router-link>
       </el-menu-item>
-      <el-menu-item index="3">
+      <el-menu-item index="4" class="fooitem">
         <router-link to="/self">Me</router-link>
       </el-menu-item>
     </el-menu>
@@ -29,10 +32,12 @@ const activeIndex = ref('1');
 watch(route, () => {
   if (route.path === '/') {
     activeIndex.value = '1';
-  } else if (route.path === '/files') {
+  } else if (route.path === '/search') {
     activeIndex.value = '2';
-  } else if (route.path === '/self') {
+  } else if (route.path === '/files') {
     activeIndex.value = '3';
+  } else if (route.path === '/self') {
+    activeIndex.value = '4';
   }
 }, { immediate: true });
 </script>
@@ -41,7 +46,8 @@ watch(route, () => {
 #foobar {
   justify-content: space-between;
 }
-el-menu-item {
+.fooitem {
+  flex: 1;
   text-align: center;
 }
 </style>
