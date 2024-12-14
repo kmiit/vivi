@@ -16,26 +16,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import '@/css/footer.css'
 
-const route = useRoute();
+const route = useRoute()
 
-const activeIndex = ref('/');
+const activeIndex = ref('/')
 // 监听路由变化并动态更新 `default-active` 的值
 watch(route, () => {
   activeIndex.value = route.path
-}, { immediate: true });
+}, { immediate: true })
 </script>
-
-<style>
-#foobar {
-  display: flex;
-  justify-content: space-evenly;
-}
-.fooitem {
-  width: 25%;
-  flex: auto;
-  text-align: center;
-}
-</style>

@@ -2,7 +2,7 @@
   <div id="fdiv">
     <div id="logo">
       <!-- Logo -->
-      <p>Vivi</p>
+      <router-link :to="'/'">Vivi</router-link>
     </div>
     <div id="onRight">
       <div id="searchbox">
@@ -16,11 +16,13 @@
       </div>
       <div id="avatar">
         <!-- Avatar -->
+        <router-link :to="'/self'">
         <el-avatar>
           <img v-if="avatarUrl !== ''"
-            :src="avatarUrl" />
+            :src="avatarUrl"/>
           <!--<p v-else>{{ User.username[0] }}</p>-->
         </el-avatar>
+        </router-link>
       </div>
     </div>
   </div>
@@ -29,25 +31,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Search } from '@element-plus/icons-vue'
+import '@/css/header.css'
 
 const searchbox = ref('')
 const avatarUrl = ''
 </script>
-
-<style scoped>
-#fdiv {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-}
-
-#onRight {
-  display: flex;
-  align-items: center;
-}
-
-#searchbox {
-  margin-right: 10px;
-}
-</style>

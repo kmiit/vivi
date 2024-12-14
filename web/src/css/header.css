@@ -1,0 +1,15 @@
+#fdiv {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+#onRight {
+    display: flex;
+    align-items: center;
+}
+
+#searchbox {
+    margin-right: 10px;
+}
