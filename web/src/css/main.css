@@ -1,0 +1,15 @@
+html body #app {
+    padding: 0;
+}
+
+html body a:hover {
+    background-color: transparent;
+}
+
+.main-container {
+    height: 100vh;
+}
+
+#footer {
+    padding: 0;
+}
