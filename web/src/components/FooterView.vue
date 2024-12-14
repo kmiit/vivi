@@ -34,6 +34,7 @@ watch(route, () => {
   justify-content: space-evenly;
 }
 .fooitem {
+  width: 25%;
   flex: auto;
   text-align: center;
 }
