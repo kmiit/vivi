@@ -18,7 +18,7 @@
     </el-menu>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 

@@ -16,8 +16,8 @@
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import FooterView from '@/components/FooterView.vue'
 import HeaderView from '@/components/HeaderView.vue'
+import FooterView from '@/components/FooterView.vue'
 </script>
 
 <style>
@@ -39,5 +39,6 @@ import HeaderView from '@/components/HeaderView.vue'
   bottom: 0;
   left: 0;
   width: 100%;
+  padding: 0;
 }
 </style>
